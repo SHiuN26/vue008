@@ -11,7 +11,9 @@
     <title>vue008</title>
 </head>
 <body>
+    
     <div class="" id="app">
+        <h4>{{playing_time}}</h4>
         <div class="audioplayer" v-for="s in sounddata">
             <label for="">{{s.number}}</label>
             <audio controls v-bind:data-num="s.number">
