@@ -1,3 +1,32 @@
+$key_width: 44px
+$key_height: 330px
+$color_white: #eee
+$color_black: #585858
+
+@mixin size($w,$h)
+    width: $w
+    height: $h
+
 *
     font-family: 微軟正黑體
-    
+    vertical-align: top
+html,body 
+    @include size(100%,100%)
+    margin: 0px
+    padding: 0px
+        
+.pianokey
+    display: inline-block
+    position: relative
+.white
+    @include size($key_width,$key_height)
+    border: solid 1px black
+.black
+    position: absolute
+    top: 0px
+    width: $key_width/2
+    height: $key_height*0.55
+    background-color: $color_black
+    margin-left: -$key_width/4
+    margin-right: -$key_width/4
+    z-index: 20

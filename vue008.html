@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="vue008.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.js"></script>
     <script src="jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.js"></script>
+    <link rel="stylesheet" href="vue008.css">
     <script src="vue008.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,11 +15,25 @@
     <div class="" id="app">
         <h4>{{playing_time}}</h4>
         <div class="audioplayer" v-for="s in sounddata">
-            <label for="">{{s.number}}</label>
-            <audio controls v-bind:data-num="s.number">
+            <!-- <label for="">{{s.number}}</label> -->
+            <audio v-bind:data-num="s.number">
                 <source v-bind:src="s.url" type="audio/ogg">
             </audio>
         </div>
+
+        <div class="center_box">
+            <h2>Vue.js Piano Project 7</h2>
+            <div class="keyboard">
+                <div class="pianokey" v-for="s in display_keys">
+                    <div class="white" v-if="s.type=='white'" v-on:click="playnote(s.num,1)"></div>
+                    <div class="black" v-if="s.type=='black'"></div>
+                </div>
+            </div>
+        </div>
+
+        <button v-on:click="playnext(1)">Playnext</button>
+        <button v-if="playing_time&lt;=0" v-on:click="startplay">Startplay</button>
+        <button v-if="playing_time&gt;=1" v-on:click="stopplay">Stopplay</button>
     </div>
 </body>
 </html>
