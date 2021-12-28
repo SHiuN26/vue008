@@ -17,7 +17,10 @@ $(document).ready(function () {
             now_note_id: 0,
             next_note_id: 0,
             playing_time: 0,
+            record_time: 0,
+            now_press_key: -1,
             player: null,
+            recorder: null,
             display_keys: [
                 {num: 1,key: 90,type: 'white'},
                 {num: 1.5,key: 83,type: 'black'},
@@ -49,7 +52,7 @@ $(document).ready(function () {
         methods: {
             playnote: function(id,volume){
                 if(id>0){
-                    var audio_obj=$("audio[data-num="+id+"]")[0];
+                    var audio_obj=$("audio[data-num='"+id+"']")[0];
                     audio_obj.volume=volume;
                     audio_obj.currentTime=0;
                     audio_obj.play();
@@ -59,10 +62,20 @@ $(document).ready(function () {
                 var play_note=this.notes[this.now_note_id].num;
                 this.playnote(play_note,volume);
                 this.now_note_id+=1;
-
                 if(this.now_note_id>=this.notes.length){
                     this.stopplay();
                 }
+            },
+            start_record: function(){
+                this.record_time=0;
+                this.recorder=setInterval(function(){
+                    vm.record_time++;
+                })
+            },
+            stop_record: function(){
+                clearInterval(this.recorder);
+                this.record_time=0;
+                
             },
             startplay: function(){
                 this.now_note_id=0;
@@ -82,7 +95,50 @@ $(document).ready(function () {
                 this.now_note_id=0;
                 this.playing_time=0;
                 this.next_note_id=0;
+            },
+            get_current_highlight: function(id,skey){
+                if(this.playing_time == 0) 
+                return false;
+                if(this.now_press_key==skey)
+                    return true;
+                if(this.notes.length==0)
+                    return false;
+                var cur_id=this.now_note_id-1;
+                if(cur_id<0) cur_id=0;
+                var num=this.notes[cur_id].num;
+                if(num==id)
+                    return true;
+                return false;
+            },
+            addnote: function(id){
+                if(this.record_time>0)
+                    this.notes.push({num:id,time:this.record_time})
+                this.playnote(id,1);
+            },
+            load_sample: function(){
+                var vobj=this;
+                $.ajax({
+                    url: "http://awiclass.monoame.com/api/command.php?type=get&name=music_dodoro",
+                    success: function (res) {
+                        vobj.notes=JSON.parse(res);
+                    }
+                });
             }
         }
     });
+    $(window).keydown(function (e) { 
+        var key =e.which;
+        vm.now_press_key=key;
+        for(var i=0;i<vm.display_keys.length;i++){
+            if(key==vm.display_keys[i].key){
+                vm.addnote(vm.display_keys[i].num)
+            }
+        }
+    });
+
+    $(window).keyup(function (e) { 
+        vm.now_press_key=-1;
+    });
+
+
 });
